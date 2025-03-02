@@ -78,3 +78,7 @@ std::map<std::string, std::pair<long long,int>> Player::getSellOrders() {
 void Player::addPortofolio(std::string t, long long v) {
 	this->m_portofolio[t] += v;
 }
+
+void Player::readMarket() {
+
+}

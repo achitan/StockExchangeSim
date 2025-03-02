@@ -5,6 +5,7 @@ Market::Market(long long n, long m) {
     this->m_tickerV.clear();
     this->createTickers(n);
     this->createPlayers(m);
+    this->recordMarket();
 }
 
 Market::Market(std::vector<Ticker> ts, std::vector<Player> ps) {
@@ -12,6 +13,7 @@ Market::Market(std::vector<Ticker> ts, std::vector<Player> ps) {
 	this->m_tickerV.clear();
 	this->m_playerV = ps;
 	this->m_tickerV = ts;
+    this->recordMarket();
 }
 
 Market::Market(std::vector<Ticker> ts) {
@@ -80,8 +82,9 @@ void Market::createPlayers(long m) {
 }
 
 void Market::updateMarket() {
-    fulfillOrders();
+    this->fulfillOrders();
     ++date;
+    this->recordMarket();
 }
 
 void Market::fulfillOrders() {
@@ -89,7 +92,7 @@ void Market::fulfillOrders() {
         for (auto& o : p.getBuyOrders()) {
             for (auto& t : this->m_tickerV) {
                 if (t.getName().compare(o.first) == 0) {
-                    std::cout << t.getName() << ": " << t.getPrice();
+                    //std::cout << t.getName() << ": " << t.getPrice();
                     long long STB = static_cast<long long>(std::floor(static_cast<float>(o.second.first) / t.getPrice()));
                     bool buyingMaxStock = (STB >= (t.getVolume() / 5)) ? true : false;
                     if (buyingMaxStock) {
@@ -104,10 +107,8 @@ void Market::fulfillOrders() {
                     t.setPrice((static_cast<float>(t.getCapitalization()) + static_cast<float>(STB) * t.getPrice()) / static_cast<float>(t.getVolume()));
                     //std::cout << t.getVolume() / STB << std::endl;
                     //std::cout << (static_cast<float>(t.getCapitalization()) + static_cast<float>(STB) * t.getPrice()) / static_cast<float>(t.getVolume()) << std::endl;
-                    std::cout << " --> " << t.getPrice() << std::endl;
+                    //std::cout << " --> " << t.getPrice() << std::endl;
                 }
-                
-                
             }
         }
     }
@@ -122,5 +123,11 @@ void Market::placeOrders() {
         std::uniform_int_distribution<int> r_capital(p.getCapital() / 6, p.getCapital() / 4);
         p.addBuyOrder(this->m_tickerV.at(r_tick(re)).getName(), r_capital(re), date + 5);
         //p.showOrders();
+    }
+}
+
+void Market::recordMarket() {
+    for (auto& t : this->m_tickerV) {
+        this->m_priceHistory[t.getName()].push_back(t.getPrice());
     }
 }

@@ -14,7 +14,9 @@ class Market {
 private:
 	std::vector<Ticker> m_tickerV;
 	std::vector<Player> m_playerV;
+	std::map<std::string, std::vector<float>> m_priceHistory;
 	void fulfillOrders();
+	void recordMarket();
 
 public:
 	static unsigned int date;
