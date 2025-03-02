@@ -41,7 +41,7 @@ void Market::createTickers(long long n) {
     std::vector<long long> volumes(ticks.size());
     std::vector<float> prices(ticks.size());
     std::uniform_int_distribution<long long> r_longlong(100'000, 1'000'000);
-    std::uniform_real_distribution<float> r_float(1., 200.);
+    std::uniform_real_distribution<float> r_float(1., 50.);
     for (auto& v : volumes) {
         v = r_longlong(re);
     }
@@ -68,7 +68,7 @@ void Market::createPlayers(long m) {
     }
     std::random_device rd;
     std::default_random_engine re(rd());
-    std::uniform_int_distribution<long long> r_longlong(1'000'000, 1'000'000'000);
+    std::uniform_int_distribution<long long> r_longlong(1'000, 1'000'000);
     for (auto& c : capitals) {
         c = r_longlong(re);
     }
@@ -89,9 +89,9 @@ void Market::fulfillOrders() {
         for (auto& o : p.getBuyOrders()) {
             for (auto& t : this->m_tickerV) {
                 if (t.getName().compare(o.first) == 0) {
-                    //std::cout << t.getName() << ": " << t.getPrice();
+                    std::cout << t.getName() << ": " << t.getPrice();
                     long long STB = static_cast<long long>(std::floor(static_cast<float>(o.second.first) / t.getPrice()));
-                    bool buyingMaxStock = (STB >= (t.getVolume() / 3)) ? true : false;
+                    bool buyingMaxStock = (STB >= (t.getVolume() / 5)) ? true : false;
                     if (buyingMaxStock) {
                         STB = t.getVolume() / 3;
                         p.setCapital(p.getCapital() + (o.second.first - static_cast<long long>(STB * t.getPrice())));
@@ -104,7 +104,7 @@ void Market::fulfillOrders() {
                     t.setPrice((static_cast<float>(t.getCapitalization()) + static_cast<float>(STB) * t.getPrice()) / static_cast<float>(t.getVolume()));
                     //std::cout << t.getVolume() / STB << std::endl;
                     //std::cout << (static_cast<float>(t.getCapitalization()) + static_cast<float>(STB) * t.getPrice()) / static_cast<float>(t.getVolume()) << std::endl;
-                    //std::cout << " --> " << t.getPrice() << std::endl;
+                    std::cout << " --> " << t.getPrice() << std::endl;
                 }
                 
                 
@@ -119,7 +119,7 @@ void Market::placeOrders() {
     int sz = this->m_tickerV.size();
     std::uniform_int_distribution<int> r_tick(0, sz - 1);
     for (auto& p : this->m_playerV) {
-        std::uniform_int_distribution<int> r_capital(p.getCapital() / 4, p.getCapital() / 2);
+        std::uniform_int_distribution<int> r_capital(p.getCapital() / 6, p.getCapital() / 4);
         p.addBuyOrder(this->m_tickerV.at(r_tick(re)).getName(), r_capital(re), date + 5);
         //p.showOrders();
     }
