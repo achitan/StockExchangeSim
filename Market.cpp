@@ -6,6 +6,7 @@ Market::Market(long long n, long m) {
     this->createTickers(n);
     this->createPlayers(m);
     this->recordMarket();
+    this->updateIndeces();
 }
 
 Market::Market(std::vector<Ticker> ts, std::vector<Player> ps) {
@@ -14,6 +15,7 @@ Market::Market(std::vector<Ticker> ts, std::vector<Player> ps) {
 	this->m_playerV = ps;
 	this->m_tickerV = ts;
     this->recordMarket();
+    this->updateIndeces();
 }
 
 Market::Market(std::vector<Ticker> ts) {
@@ -85,6 +87,7 @@ void Market::updateMarket() {
     this->fulfillOrders();
     ++date;
     this->recordMarket();
+    this->updateIndeces();
 }
 
 void Market::fulfillOrders() {
@@ -130,4 +133,70 @@ void Market::recordMarket() {
     for (auto& t : this->m_tickerV) {
         this->m_priceHistory[t.getName()].push_back(t.getPrice());
     }
+}
+
+unsigned int Market::getDate() {
+    return this->date;
+}
+
+struct {
+    bool operator() (Ticker a, Ticker b) const {
+        return (a.getCapitalization() > b.getCapitalization());
+    }
+} orderCapital;
+
+struct {
+    bool operator() (Ticker a, Ticker b) const {
+        return (a.getPrice() > b.getPrice());
+    }
+} orderPrice;
+
+float getStdDev(std::vector<float> in) {
+    float n = 0., sumV = 0.;
+    for (auto& val : in) {
+        sumV += val;
+        n++;
+    }
+    float miu = sumV / n;
+    sumV = 0.;
+    for (auto& val : in) {
+        sumV += pow(val - miu, 2.);
+    }
+    float result = sqrt(sumV / n);
+    return result;
+}
+
+void Market::updateIndeces() {
+    int perc = static_cast<int>(std::ceil(static_cast<float>(this->m_tickerV.size()) / 100.));
+    float sumPrices = 0.;
+
+    //MEAN PRICE FOR 1% OF PRICEs
+    std::sort(this->m_tickerV.begin(), this->m_tickerV.end(), orderCapital);
+    for (int i = 0; i < perc; i++) {
+        sumPrices += this->m_tickerV.at(i).getPrice();
+    }
+    this->m_percCap.push_back(sumPrices / static_cast<float>(perc));
+
+    //MEAN PRICE FOR 1% OF CAP
+    std::sort(this->m_tickerV.begin(), this->m_tickerV.end(), orderPrice);
+    sumPrices = 0.;
+    for (int i = 0; i < perc; i++) {
+        sumPrices += this->m_tickerV.at(i).getPrice();
+    }
+    this->m_percPrice.push_back(sumPrices / static_cast<float>(perc));
+    
+    //VOLATILITY
+    sumPrices = 0.;
+    for (auto& p : this->m_priceHistory) {
+        sumPrices += getStdDev(p.second);
+    }
+    this->m_volatility.push_back(sumPrices / static_cast<float>(this->m_priceHistory.size()));
+
+    //COHERENCE
+    sumPrices = 0.;
+    std::vector<float> caps;
+    for (auto& t : this->m_tickerV) {
+        caps.push_back(t.getCapitalization());
+    }
+    this->m_coherence.push_back(getStdDev(caps));
 }

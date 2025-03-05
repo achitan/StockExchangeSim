@@ -15,8 +15,13 @@ private:
 	std::vector<Ticker> m_tickerV;
 	std::vector<Player> m_playerV;
 	std::map<std::string, std::vector<float>> m_priceHistory;
+	std::vector<float> m_percCap;
+	std::vector<float> m_percPrice;
+	std::vector<float> m_volatility;
+	std::vector<float> m_coherence;
 	void fulfillOrders();
 	void recordMarket();
+	void updateIndeces();
 
 public:
 	static unsigned int date;
@@ -27,4 +32,5 @@ public:
 	void createPlayers(long m);
 	void updateMarket();
 	void placeOrders();
+	unsigned int getDate();
 };

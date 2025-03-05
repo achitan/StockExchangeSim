@@ -12,10 +12,12 @@ private:
 	std::map<std::string, std::pair<long long, int>> m_sellmap;
 	std::map<std::string, std::pair<long long, int>> m_buymap;
 	long long m_capital;
+	int m_behaviour;
 
 public:
 	Player(std::string n);
 	Player(std::string n, long long c);
+	void setBehaviour(int b);
 	void setCapital(long long c);
 	long long getCapital();
 	void addBuyOrder(std::string t, long long c, unsigned int d);
@@ -26,5 +28,5 @@ public:
 	std::map<std::string, std::pair<long long, int>> getBuyOrders();
 	std::map<std::string, std::pair<long long, int>> getSellOrders();
 	void addPortofolio(std::string t, long long c);
-	void readMarket();
+	void readMarket(std::map<std::string,std::vector<float>> in);
 };

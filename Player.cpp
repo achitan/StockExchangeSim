@@ -3,11 +3,13 @@
 Player::Player(std::string n) {
 	this->m_name = n;
 	this->m_capital = 0.;
+	this->m_behaviour = 7;
 }
 
 Player::Player(std::string n, long long c) {
 	this->m_name = n;
 	this->m_capital = c;
+	this->m_behaviour = 7;
 }
 
 void Player::setCapital(long long c) {
@@ -79,6 +81,10 @@ void Player::addPortofolio(std::string t, long long v) {
 	this->m_portofolio[t] += v;
 }
 
-void Player::readMarket() {
+void Player::setBehaviour(int b) {
+	this->m_behaviour = b;
+}
+
+void Player::readMarket(std::map<std::string, std::vector<float>> in) {
 
 }
