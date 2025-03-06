@@ -28,5 +28,5 @@ public:
 	std::map<std::string, std::pair<long long, int>> getBuyOrders();
 	std::map<std::string, std::pair<long long, int>> getSellOrders();
 	void addPortofolio(std::string t, long long c);
-	void readMarket(std::map<std::string,std::vector<float>> in);
+	int getBehaviour();
 };

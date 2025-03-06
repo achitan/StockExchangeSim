@@ -33,4 +33,9 @@ public:
 	void updateMarket();
 	void placeOrders();
 	unsigned int getDate();
+	std::vector<float> getVolatility();
+	std::vector<float> getpercPrice();
+	std::vector<float> getpercCap();
+	std::vector<float> getCoherence();
+	void readMarket(Player p);
 };

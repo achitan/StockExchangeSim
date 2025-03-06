@@ -200,3 +200,23 @@ void Market::updateIndeces() {
     }
     this->m_coherence.push_back(getStdDev(caps));
 }
+
+std::vector<float> Market::getVolatility() {
+    return this->m_volatility;
+}
+
+std::vector<float> Market::getCoherence() {
+    return this->m_coherence;
+}
+
+std::vector<float> Market::getpercPrice() {
+    return this->m_percPrice;
+}
+
+std::vector<float> Market::getpercCap() {
+    return this->m_percCap;
+}
+
+void Market::readMarket(Player p) {
+
+}

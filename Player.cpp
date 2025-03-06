@@ -85,6 +85,6 @@ void Player::setBehaviour(int b) {
 	this->m_behaviour = b;
 }
 
-void Player::readMarket(std::map<std::string, std::vector<float>> in) {
-
+int Player::getBehaviour() {
+	return this->m_behaviour;
 }
